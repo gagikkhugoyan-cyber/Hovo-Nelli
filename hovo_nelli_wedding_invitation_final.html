@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Հովո և Նելլի | Հարսանեկան Հրավիրատոմս</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Noto+Serif+Armenian:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-ivory: #F8F5F0;
+            --card-white: #FFFFFF;
+            --black-accent: #1C1A18;
+            --gold-accent: #C5A059;
+            --gold-light: #E2C993;
+            --text-dark: #2B2621;
+            --text-muted: #7E746A;
+            --border-gold: rgba(197, 160, 89, 0.35);
+            --shadow-soft: 0 20px 50px rgba(43, 38, 33, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            font-family: 'Noto Serif Armenian', serif;
+            background-color: var(--bg-ivory);
+            color: var(--text-dark);
+            line-height: 1.8;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Ambient Botanical Watermarks matching reference style */
+        .floral-bg {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.25;
+            width: 320px;
+        }
+        .floral-tl { top: -20px; left: -20px; }
+        .floral-br { bottom: -20px; right: -20px; transform: rotate(180deg); }
+
+        /* FLOATING AUDIO TOGGLE */
+        .audio-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 999;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--black-accent);
+            color: var(--gold-accent);
+            border: 1px solid var(--gold-accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        .audio-btn:hover { transform: scale(1.1); }
+        .audio-btn svg { width: 22px; height: 22px; fill: var(--gold-accent); }
+
+        /* 1. COVER / INTRO SCREEN */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background: linear-gradient(135deg, #FAF7F2 0%, #F0EADF 100%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            text-align: center;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease;
+        }
+
+        #intro-screen.unveil {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cover-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 560px;
+            background: var(--card-white);
+            border: 1px solid var(--border-gold);
+            border-radius: 28px;
+            padding: 55px 35px;
+            box-shadow: var(--shadow-soft);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Envelope Illustration inside Cover */
+        .envelope-graphic {
+            width: 180px;
+            height: 110px;
+            background: #EFECE6;
+            border: 1px solid var(--border-gold);
+            border-radius: 6px;
+            position: relative;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+        }
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            background: #E4DFD5;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .wax-seal {
+            width: 40px;
+            height: 40px;
+            background: var(--gold-accent);
+            border-radius: 50%;
+            color: #FFFFFF;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            margin-top: 15px;
+        }
+
+        .cover-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            letter-spacing: 4px;
+            color: var(--black-accent);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .cover-subtitle {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .cover-names {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--black-accent);
+            margin-bottom: 12px;
+        }
+
+        .cover-date {
+            font-size: 1.1rem;
+            color: var(--gold-accent);
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 35px;
+        }
+
+        .open-btn {
+            background: var(--black-accent);
+            color: #FFFFFF;
+            border: 1px solid var(--gold-accent);
+            padding: 16px 44px;
+            border-radius: 40px;
+            font-size: 1.05rem;
+            font-family: inherit;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            box-shadow: 0 10px 25px rgba(28,26,24,0.15);
+        }
+        .open-btn:hover {
+            background: var(--gold-accent);
+            color: #FFFFFF;
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(197,160,89,0.35);
+        }
+
+        /* MAIN INVITATION CONTENT */
+        #main-content {
+            opacity: 0;
+            transition: opacity 1.2s ease 0.3s;
+        }
+        #main-content.visible {
+            opacity: 1;
+        }
+
+        .section {
+            padding: 90px 20px;
+            position: relative;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .divider {
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
+            margin: 24px auto;
+        }
+
+        /* 2. BLACK & WHITE PORTRAIT SECTION */
+        .photo-card {
+            background: var(--card-white);
+            border: 1px solid var(--border-gold);
+            border-radius: 28px;
+            padding: 45px 30px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .portrait-container {
+            width: 100%;
+            max-width: 440px;
+            height: 480px;
+            margin: 0 auto 30px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            position: relative;
+        }
+
+        .portrait-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
+        }
+        .portrait-container:hover img {
+            filter: grayscale(0%);
+        }
+
+        .main-names {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--black-accent);
+            margin-bottom: 8px;
+        }
+
+        .main-date-sub {
+            font-size: 1.15rem;
+            color: var(--gold-accent);
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* 3. LETTER / INVITATION TEXT SECTION */
+        .letter-card {
+            background: var(--card-white);
+            border: 1px solid var(--border-gold);
+            border-radius: 28px;
+            padding: 55px 40px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--black-accent);
+            margin-bottom: 14px;
+        }
+
+        .letter-text {
+            font-size: 1.15rem;
+            color: var(--text-dark);
+            line-height: 2.1;
+            margin-bottom: 30px;
+        }
+
+        .signature {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold-accent);
+            font-style: italic;
+        }
+
+        /* 4. DATE, COUNTDOWN, MAP & CALENDAR */
+        .details-card {
+            background: var(--card-white);
+            border: 1px solid var(--border-gold);
+            border-radius: 28px;
+            padding: 55px 35px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .event-date-large {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--gold-accent);
+            margin-bottom: 35px;
+        }
+
+        /* Countdown Timers */
+        .countdown-grid {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 45px;
+        }
+
+        .countdown-box {
+            background: var(--bg-ivory);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            padding: 18px 12px;
+            min-width: 80px;
+            flex: 1;
+        }
+
+        .countdown-num {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--black-accent);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .countdown-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Venue Link Button */
+        .venue-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--black-accent);
+            margin-bottom: 16px;
+        }
+
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-ivory);
+            color: var(--black-accent);
+            border: 1px solid var(--gold-accent);
+            padding: 15px 32px;
+            border-radius: 35px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+        .map-btn:hover {
+            background: var(--gold-accent);
+            color: #FFFFFF;
+            transform: translateY(-2px);
+        }
+
+        /* November 2026 Calendar Grid with Heart */
+        .calendar-box {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px dashed var(--border-gold);
+        }
+
+        .calendar-month-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--black-accent);
+            margin-bottom: 24px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .cal-head {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding-bottom: 10px;
+        }
+
+        .cal-day {
+            font-size: 1rem;
+            padding: 10px 0;
+            color: var(--text-dark);
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .cal-day.wedding-date {
+            color: #FFFFFF;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .cal-day.wedding-date::before {
+            content: '♥';
+            position: absolute;
+            font-size: 2.3rem;
+            color: var(--gold-accent);
+            z-index: -1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -52%);
+        }
+
+        /* 5. AGENDA / SCHEDULE SECTION */
+        .agenda-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .agenda-item {
+            display: flex;
+            align-items: center;
+            background: var(--card-white);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 26px 30px;
+            gap: 24px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .agenda-time {
+            background: var(--bg-ivory);
+            border: 1px solid var(--gold-accent);
+            color: var(--black-accent);
+            font-size: 1.35rem;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 14px;
+            min-width: 105px;
+            text-align: center;
+        }
+
+        .agenda-details h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--black-accent);
+            margin-bottom: 4px;
+        }
+
+        .agenda-details p {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+        }
+
+        /* 6. RSVP GOOGLE FORM ACTION SECTION */
+        .rsvp-card {
+            background: var(--card-white);
+            border: 1px solid var(--border-gold);
+            border-radius: 28px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .rsvp-desc {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+        }
+
+        .rsvp-btn {
+            display: inline-block;
+            background: var(--black-accent);
+            color: #FFFFFF;
+            border: 1px solid var(--gold-accent);
+            padding: 18px 50px;
+            border-radius: 40px;
+            font-size: 1.15rem;
+            font-family: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 25px rgba(28,26,24,0.15);
+            transition: all 0.35s ease;
+        }
+        .rsvp-btn:hover {
+            background: var(--gold-accent);
+            color: #FFFFFF;
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(197,160,89,0.35);
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+            font-size: 1rem;
+            background: var(--bg-ivory);
+            border-top: 1px solid var(--border-gold);
+        }
+
+        /* Scroll Animation Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: all 1s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .cover-card { padding: 45px 24px; }
+            .cover-names { font-size: 2.1rem; }
+            .main-names { font-size: 2.3rem; }
+            .letter-card, .details-card, .rsvp-card { padding: 40px 24px; }
+            .agenda-item { flex-direction: column; text-align: center; gap: 14px; }
+            .agenda-time { width: 100%; }
+            .countdown-grid { gap: 8px; }
+            .countdown-box { min-width: 65px; padding: 12px 6px; }
+            .countdown-num { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BACKGROUND AUDIO -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-wedding-piano-112191.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="audio-btn" id="audioToggle" title="Ձայնը միացնել/անջատել" onclick="toggleAudio()">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+        </svg>
+    </div>
+
+    <!-- 1. INTRO / COVER SCREEN -->
+    <div id="intro-screen">
+        <div class="cover-card">
+            <div class="envelope-graphic">
+                <div class="envelope-flap"></div>
+                <div class="wax-seal">H</div>
+            </div>
+            <div class="cover-subtitle">ՀԱՐՍԱՆԵԿԱՆ ՀՐԱՎԻՐԱՏՈՄՍ</div>
+            <h1 class="cover-names">Հովո և Նելլի</h1>
+            <div class="cover-date">20 ՆՈՅԵՄԲԵՐԻ, 2026</div>
+            <button class="open-btn" onclick="openInvitation()">Բացել հրավիրատոմսը</button>
+        </div>
+    </div>
+
+    <!-- MAIN INVITATION SITE -->
+    <div id="main-content">
+
+        <!-- 2. BLACK & WHITE PORTRAIT HERO -->
+        <section class="section">
+            <div class="container reveal">
+                <div class="photo-card">
+                    <div class="portrait-container">
+                        <!-- Using first uploaded couple portrait in grayscale matching reference style -->
+                        <img src="IMG_6296_2.jpg" alt="Հովո և Նելլի">
+                    </div>
+                    <h2 class="main-names">Հովո և Նելլի</h2>
+                    <div class="divider"></div>
+                    <p class="main-date-sub">20․11․2026</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. INVITATION LETTER -->
+        <section class="section">
+            <div class="container reveal">
+                <div class="letter-card">
+                    <h2 class="section-title">Սիրելի ընկերներ և բարեկամներ</h2>
+                    <div class="divider"></div>
+                    <p class="letter-text">
+                        Սրտանց հրավիրում ենք Ձեզ մեզ հետ միասին տոնելու մեր կյանքի ամենակարևոր և գեղեցիկ օրը: Այս օրն իր մեջ պահելու է շատ հիշողություններ, և մենք ցանկանում ենք կիսվել այդ երջանիկ պահերով ձեզ հետ: Այդ իսկ պատճառով, մենք հրավիրում ենք Ձեզ մեր հարսանեկան արարողությանը, որպեսզի ձեր ներկայությունը դարձնի այդ օրը անչափ կարևոր և խորհրդանշական:
+                    </p>
+                    <p class="signature">Հարգանքով՝ Հովո և Նելլի</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. DATE, COUNTDOWN, MAP & CALENDAR -->
+        <section class="section">
+            <div class="container reveal">
+                <div class="details-card">
+                    <h2 class="section-title">Հարսանիքը տեղի կունենա</h2>
+                    <div class="event-date-large">2026 թվականի Նոյեմբերի 20-ին</div>
+
+                    <!-- Countdown Timer -->
+                    <div class="countdown-grid" id="countdown">
+                        <div class="countdown-box">
+                            <div class="countdown-num" id="days">00</div>
+                            <div class="countdown-label">Օր</div>
+                        </div>
+                        <div class="countdown-box">
+                            <div class="countdown-num" id="hours">00</div>
+                            <div class="countdown-label">Ժամ</div>
+                        </div>
+                        <div class="countdown-box">
+                            <div class="countdown-num" id="minutes">00</div>
+                            <div class="countdown-label">Րոպե</div>
+                        </div>
+                        <div class="countdown-box">
+                            <div class="countdown-num" id="seconds">00</div>
+                            <div class="countdown-label">Վայրկյան</div>
+                        </div>
+                    </div>
+                    <div id="weddingFinished" style="display:none; font-size:1.2rem; color:var(--gold-accent); font-weight:600; margin-bottom:30px;">
+                        ✨ Շնորհակալություն մեր կյանքի լուսավոր օրը մեզ հետ կիսելու համար ✨
+                    </div>
+
+                    <!-- Venue Location -->
+                    <div class="venue-name">Վայրը ՝ Բայազետ Հոլլ</div>
+                    <a href="https://maps.app.goo.gl/jYLdgV3TqcD9EJTw5" target="_blank" class="map-btn">
+                        📍 Բացել Քարտեզի Վրա (Google Maps)
+                    </a>
+
+                    <!-- November 2026 Calendar -->
+                    <div class="calendar-box">
+                        <div class="calendar-month-title">ՆՈՅԵՄԲԵՐ 2026</div>
+                        <div class="calendar-grid">
+                            <div class="cal-head">ԿԻՐ</div>
+                            <div class="cal-head">ԵՐԿ</div>
+                            <div class="cal-head">ԵՐՔ</div>
+                            <div class="cal-head">ՉՈՐ</div>
+                            <div class="cal-head">ՀԻՆ</div>
+                            <div class="cal-head">ՈՒՐԲ</div>
+                            <div class="cal-head">ՇԲԹ</div>
+
+                            <!-- Nov 1, 2026 is Sunday -->
+                            <div class="cal-day">1</div>
+                            <div class="cal-day">2</div>
+                            <div class="cal-day">3</div>
+                            <div class="cal-day">4</div>
+                            <div class="cal-day">5</div>
+                            <div class="cal-day">6</div>
+                            <div class="cal-day">7</div>
+
+                            <div class="cal-day">8</div>
+                            <div class="cal-day">9</div>
+                            <div class="cal-day">10</div>
+                            <div class="cal-day">11</div>
+                            <div class="cal-day">12</div>
+                            <div class="cal-day">13</div>
+                            <div class="cal-day">14</div>
+
+                            <div class="cal-day">15</div>
+                            <div class="cal-day">16</div>
+                            <div class="cal-day">17</div>
+                            <div class="cal-day">18</div>
+                            <div class="cal-day">19</div>
+                            <div class="cal-day wedding-date">20</div>
+                            <div class="cal-day">21</div>
+
+                            <div class="cal-day">22</div>
+                            <div class="cal-day">23</div>
+                            <div class="cal-day">24</div>
+                            <div class="cal-day">25</div>
+                            <div class="cal-day">26</div>
+                            <div class="cal-day">27</div>
+                            <div class="cal-day">28</div>
+
+                            <div class="cal-day">29</div>
+                            <div class="cal-day">30</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. AGENDA / SCHEDULE -->
+        <section class="section">
+            <div class="container reveal">
+                <h2 class="section-title" style="text-align:center; margin-bottom:35px;">Օրակարգ</h2>
+
+                <div class="agenda-stack">
+                    <div class="agenda-item">
+                        <div class="agenda-time">10:30</div>
+                        <div class="agenda-details">
+                            <h3>Փեսայի տուն</h3>
+                            <p>Հարսանեկան օրվա հանդիսավոր սկիզբ</p>
+                        </div>
+                    </div>
+
+                    <div class="agenda-item">
+                        <div class="agenda-time">12:30</div>
+                        <div class="agenda-details">
+                            <h3>Հարսի տուն</h3>
+                            <p>Հարսին դուրս բերելու արարողություն</p>
+                        </div>
+                    </div>
+
+                    <div class="agenda-item">
+                        <div class="agenda-time">14:00</div>
+                        <div class="agenda-details">
+                            <h3>Գավառի Սբ․ Աստվածածին եկեղեցի</h3>
+                            <p>Սուրբ Պսակադրության արարողություն</p>
+                        </div>
+                    </div>
+
+                    <div class="agenda-item">
+                        <div class="agenda-time">17:00</div>
+                        <div class="agenda-details">
+                            <h3>Բայազետ Հոլլ</h3>
+                            <p>Հարսանեկան հանդիսություն և տոնական խնջույք</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. RSVP GOOGLE FORM SECTION -->
+        <section class="section" id="rsvp-section">
+            <div class="container reveal">
+                <div class="rsvp-card">
+                    <h2 class="section-title" style="margin-bottom:12px;">Մասնակցության Հաստատում</h2>
+                    <p class="rsvp-desc">Խնդրում ենք սեղմել ներքևի կոճակը՝ հրավերը հաստատելու համար</p>
+                    <a href="https://forms.gle/ToQAVm12GVX7WuSRA" target="_blank" class="rsvp-btn">
+                        Հրավերի Հաստատում
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Սիրով սպասում ենք Ձեզ՝ Հովո և Նելլի 🤍</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Open Invitation & Play Audio
+        function openInvitation() {
+            const intro = document.getElementById('intro-screen');
+            const main = document.getElementById('main-content');
+            const audio = document.getElementById('bgMusic');
+
+            intro.classList.add('unveil');
+            main.classList.add('visible');
+
+            audio.play().then(() => {
+                isPlaying = true;
+            }).catch(e => {
+                console.log("Audio autoplay prevented:", e);
+            });
+
+            setTimeout(revealOnScroll, 300);
+        }
+
+        // Toggle Audio
+        let isPlaying = false;
+        function toggleAudio() {
+            const audio = document.getElementById('bgMusic');
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+            } else {
+                audio.play();
+                isPlaying = true;
+            }
+        }
+
+        // Countdown Timer targeting November 20, 2026, 10:30 AM Armenia Time (+04:00)
+        const weddingTime = new Date("2026-11-20T10:30:00+04:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = weddingTime - now;
+
+            if (distance < 0) {
+                document.getElementById("countdown").style.display = "none";
+                document.getElementById("weddingFinished").style.display = "block";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = String(days).padStart(2, '0');
+            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Scroll Reveal
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+
+        window.addEventListener('scroll', revealOnScroll);
+    </script>
+</body>
+</html>
